@@ -16,7 +16,13 @@ fn main() -> () {
     // let sorted = bublesort::sort(vec);
     
     println!("sorting...\n\n\n");
-    let sorted = quicksort::sort(vec);
+    let sorted = match quicksort::sort(vec) {
+        Ok(res) => res,
+        Err(err) => {
+            eprintln!("failed to sort! {}", err);
+            return;
+        }
+    }; 
     println!("complete...\n\n\n");
     println!("sorted: {:?}", sorted);
 }

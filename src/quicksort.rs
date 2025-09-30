@@ -1,17 +1,17 @@
 #![allow(clippy::needless_return)]
 #![allow(unused_parens)] 
 
-pub fn sort(mut input: Vec<i32>) -> Vec<i32>{
+pub fn sort(mut input: Vec<i32>) -> Result<Vec<i32>, String>{
 
     let len = input.len();
     if(len == 1){
-        return input;
+        return Ok(input);
     }
     if(len == 2){
         if(input[0]>input[1]){
             input.swap(0, 1);
         }
-        return input;
+        return Ok(input);
     }
     
     let pivot_index: usize = median_of_three(&mut input, 0, len - 1);
@@ -37,15 +37,21 @@ pub fn sort(mut input: Vec<i32>) -> Vec<i32>{
     input.swap(left, len-1);
 
     if(left>0){
-        let tmp = sort(input[0..left].to_vec());
+        let tmp: Vec<i32> = match sort(input[0..left].to_vec()) {
+            Ok(res) => res,
+            Err(e) => return Err(e),
+        };
         input[0..left].copy_from_slice(&tmp);
     }
     if(right<len-1){
-        let tmp = sort(input[right+1..len].to_vec());
-        input[right+1..len].copy_from_slice(&tmp);
+        let tmp = match sort(input[right+1..len].to_vec()) 
+        {
+            Ok(res) => res,
+            Err(e) => return Err(e),
+        };
     }
 
-    return input;
+    return Ok(input);
 }
 
 fn median_of_three(arr: &mut Vec<i32>, left: usize, right: usize) -> usize {
